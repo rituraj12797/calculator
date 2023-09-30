@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tric tac toe</title>
+    <style>
+        *{
+            overflow-x: hidden;
+          overflow-y: hidden;
+          box-sizing: border-box;
+        }
+        body
+        {
+          height: 100vh;
+          width: 100vw;
+          color: white;
+          background-image: conic-gradient(from -90deg at 90% 0%,black,black,black,black,black,black,black,black,black,#1a0c50);
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
+          overflow-x: hidden;
+          overflow-y: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .wrapper
+        {
+            height: 100%;
+            width: 100%;
+          
+            display:grid;
+            grid-template-rows: 2fr 5fr 2fr;
+            grid-template-columns: 1fr;
+            justify-content: center;
+            align-content: center;
+            
+        }
+        .inside
+        {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+           
+        }
+        .newgame
+        {
+            background-color:#4d21ea;
+            width:15%;
+            border: none;
+            height:24%;
+            font-size: 1.5rem;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            display: flex;
+            color:rgb(255, 255, 255);
+            justify-content: center;
+            align-items: center;
+            border-radius: 5vh;
+            position: relative;
+            z-index: 1;
+            transition: all 0.2s linear;
+            
+        }
+        .newgame::before
+        {
+            content: '';
+            position: absolute;
+            transform: scale(1);
+            height:100%;
+            z-index: -2;
+            border-radius: 5vh;
+            background-color: #4d21ea;
+            width:100%;
+            opacity: 1;
+            transition: all 0.05s linear;
+        }
+     
+        .newgame:active
+        {
+            transform: scale(0.95);
+            box-shadow: 0.2vh 0.4vh 1.2vh #4d21ea;
+        }
+        .gamepad
+        {
+            
+            min-height: 19rem;
+            min-width: 19rem;
+            display: grid;
+            grid-template-rows: repeat(3,1fr);
+            grid-template-columns: repeat(3,1fr);
+            border: 0.07rem solid white;
+            border-radius: 1rem;
+            background-color: rgba(240, 255, 255, 0.081);
+        }
+        .blocks
+        {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: 600;
+            font-family:Verdana, Geneva, Tahoma, sans-ser
+        }
+        .block1,.block4,.block7,.block2,.block5,.block8{
+            border-right:  0.07rem solid white;
+            border-left: 0.07rem solid white;
+        }
+        .block4,.block5,.block6
+        {
+            border-top:  0.07rem solid white;
+            border-bottom:  0.07rem solid white;
+        }
+        .blocks:hover
+        {
+            background-color: rgba(240, 255, 255, 0.101);
+        }
+        .winner
+        {
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family:Verdana, Geneva, Tahoma, sans-ser
+        }
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class=" inside">
+            <button class="newgame">New game</button>
+        </div>
+        <div class=" inside">
+            <div class="gamepad">
+
+                <div class="block1 blocks">0</div>
+                <div class="block2 blocks">1</div>
+                <div class="block3 blocks">0</div>
+                <div class="block4 blocks"></div>
+                <div class="block5 blocks"></div>
+                <div class="block6 blocks"></div>
+                <div class="block7 blocks"></div>
+                <div class="block8 blocks"></div>
+                <div class="block9 blocks"></div>
+            </div>
+        </div>
+        C:\Desktop\gittictactoe\tic-tac-toe.html
+        <div class="winner inside">
+          
+        </div>
+    </div>
+    <script>
+      
+      document.addEventListener('DOMContentLoaded', function () {
+    const gamepad = document.querySelector('.gamepad');
+    const blocks = document.querySelectorAll('.blocks');
+    const newgame = document.querySelector('.newgame');
+    const winner = document.querySelector('.winner');
+    let gamepadclicks = 0;
+    var gamewin=0;
+    gamepad.addEventListener('click', function (event) {
+        if (event.target.classList.contains('blocks') && event.target.textContent === '' && gamewin==0) {
+            event.target.textContent = gamepadclicks % 2 === 0 ? 'o' : 'x';
+            gamepadclicks++;
+            checkWinner();
+        }
+    });
+
+    newgame.addEventListener('click', function () {
+        gamepadclicks = 0;
+        gamewin=0;
+        blocks.forEach(block => {
+            block.style.backgroundColor = '';
+            block.textContent = '';
+        });
+        winner.textContent = '';
+    });
+
+
+
+    function checkWinner() {
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontal
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Vertical
+            [0, 4, 8], [2, 4, 6]             // Diagonal
+        ];
+
+        for (const combo of winningCombinations) {
+            const [a, b, c] = combo;
+            if (blocks[a].textContent && blocks[a].textContent === blocks[b].textContent && blocks[a].textContent === blocks[c].textContent) {
+                blocks[a].style.backgroundColor = blocks[b].style.backgroundColor = blocks[c].style.backgroundColor = 'green';
+                gamewin=1;
+                winner.textContent = `Player ${blocks[a].textContent} is the winner`;
+                return;
+            }
+        }
+
+        // Check for a draw
+        if (gamepadclicks === 9 && gamewin==0) {
+            winner.textContent = "It's a draw!";
+        }
+    }
+});
+
+
+
+        
+
+       
+        
+
+        
+      
+       
+    </script>
+</body>
+</html>
